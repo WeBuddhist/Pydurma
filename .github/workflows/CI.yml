@@ -24,7 +24,14 @@ jobs:
         python-version: "3.9"
         
     - name: Install dependencies
+      # some dependencies of openpecha (pyewts, PyYAML 5.4.1) are only available as
+      # source and can't be built with recent setuptools (no pkg_resources) or Cython 3
+      env:
+        PIP_CONSTRAINT: ${{ github.workspace }}/build-constraints.txt
+        # newer pip versions only apply build constraints from this one
+        PIP_BUILD_CONSTRAINT: ${{ github.workspace }}/build-constraints.txt
       run: |
+        printf 'setuptools<80\ncython<3\n' > "$PIP_CONSTRAINT"
         pip install -U pip
         pip install .
         pip install .[dev]
