@@ -12,7 +12,8 @@ permissions:
 jobs:
   test:
 
-    runs-on: ubuntu-latest
+    # ubuntu-latest (26.04) has no Python 3.9 anymore; 24.04 still has it
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
