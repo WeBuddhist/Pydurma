@@ -1,6 +1,6 @@
 # Sanskrit (`sa`)
 
-Sanskrit support for Pydurma, for the same whole process as Tibetan: several witnesses of a text (OCR outputs or editions) are aligned, the best reading is selected at each point, and the result is written as one merged text. It provides a tokenizer, a normalizer and a weigher (`ValidSaTokenWeigher`) that plug into the same pipeline as the Tibetan ones. Input can be in **Devanagari or IAST**; all witnesses of one collation should use the same script (see [Limitations](#limitations)).
+Sanskrit support for Pydurma, for the same whole process as Tibetan: several witnesses of a text (OCR outputs or editions) are aligned, the best reading is selected at each point, and the result is written as one merged text. It provides a tokenizer, a normalizer and a weigher (`ValidSaTokenWeigher`) that plug into the same pipeline as the Tibetan ones. 
 
 ## Quick start
 
@@ -231,21 +231,7 @@ All of Pydurma's serializers work with Sanskrit, and write the selected readings
 - Tested on the Bodhicaryāvatāra (Chojuk) from [WeBuddhist](https://webuddhist.com): the Sanskrit original (76,724 characters), with witnesses generated from it. 2,500 realistic spelling variations (anusvāra, doubled consonants after r, visarga, candrabindu, avagraha, daṇḍas) gave no false differences, and merging 3 witnesses with independent OCR-like errors in 1% / 3% of the letters brought the error rate from 1.10% / 3.31% down to 0.16% / 1.27%. With 2 witnesses, `ValidSaTokenWeigher` brought it from 1.11% / 3.29% (majority vote only) down to 0.84% / 2.63%.
 
 ## Limitations
-
-- **All witnesses of one collation should use the same script** (all Devanagari or all IAST). The alignment itself works across scripts, but Pydurma's shared code (the matrix post-processing, `is_diff_token`, the weighers and serializers) compares the token text directly, and `ध` and `dha` are different text. For OCR outputs of the same pages this is always the case. To collate witnesses in different scripts, convert them to one script first.
-- **Spelling variants still get footnotes.** For the same reason, `saṃjaya` / `sañjaya` align correctly and count as one reading with `NormalizedTokenCountWeigher`, but the footnote serializers still list them as different readings.
-- **Merging only helps if the OCR outputs make different errors.** Tested on 21 real pages from [Maheshwari et al. (2022)](https://github.com/ayushbits/pe-ocr-sanskrit), OCR'd with 3 Tesseract models: the merge (15.14% character error rate) does not beat the best single model (14.97%), because at 10% of the places all 3 models are wrong, and where only one is right the vote can't tell which. **Put the most reliable witness first**: ties go to the first witness (17.81% with a weaker model first). Taking the reliability of each witness into account could get closer to the best possible choice (12.62%); Pydurma doesn't do it yet.
 - **Vowel sandhi is not handled:** *jīrṇāni anyāni* vs. *jīrṇāny anyāni*, or *tatra api* vs. *tatrāpi*, show up as variants.
 - **-aḥ → -o before voiced consonants is not handled:** *rāmaḥ gacchati* vs. *rāmo gacchati*.
 - **Nasal before nasal is deliberately not normalized:** *enaṃ manyate* vs. *enan manyate* shows up as a variant, because a rule for it would also merge real grammatical differences like *tān* / *tām*.
 - **Only Devanagari and IAST input.** Other scripts (e.g. Śāradā, Grantha) or other romanizations (Harvard-Kyoto, Velthuis) are not converted.
-- **Transpositions are not detected** (a Pydurma limitation): a change of word order shows up as an omission plus an insertion.
-
-## Known issues in Pydurma's shared code
-
-These are in code shared by all languages (Tibetan included), not in the Sanskrit module, and are left unchanged:
-
-- **`CommonSpeller` + `MdSerializer` / `HFMLSerializer` / `DocxSerializer` fail with an `IndexError`.** `CommonSpeller` adds the first witness twice, so its matrix has one more column than there are witness files. Calling the aligner directly (as in the examples above) avoids it.
-- **Extra footnotes.** `is_diff_token` (used by the matrix post-processing and the footnote serializers) compares the token text directly, so spelling-only differences get footnotes. It could take the normalizer into account.
-- **HFML notes on several akṣaras are not marked with `:`.** `HFMLSerializer` counts syllables with the Tibetan tsheg, so for Sanskrit it always treats a note as one syllable.
-- **`CSVSerializer` writes the file without specifying UTF-8**, which can fail on Windows for non-ASCII text.
