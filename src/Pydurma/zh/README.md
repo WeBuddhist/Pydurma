@@ -196,15 +196,4 @@ All of Pydurma's serializers work with Chinese:
 - **The variant table is not complete, on purpose.** Checked against [CHAR](https://github.com/cbdb-project/CHAR) (based on Taiwan's Dictionary of Variant Chinese Characters): CHAR lists many more variants, but it also merges characters that are different words in classical Chinese (云/雲, 后/後, 台/臺, 閒/間…), which would hide real variants. So only safe pairs are used (OpenCC `hk2t`/`tw2t`, the extra table, Unihan z-variants); other pairs should be added one by one after review by someone who reads Chinese. Add them with `extra_variants`, or replace OpenCC with fuller data (e.g. the Unicode Unihan variant fields or CBETA's variant table) if needed.
 - **Variant-character normalization is not covered by the Diamond Sūtra test**: CBETA had already unified variant forms, so it needs witnesses that were not normalized (e.g. OCR output).
 - **Transpositions are not detected** (a Pydurma limitation): a change of word order shows up as an omission plus an insertion.
-- **Private Use Area characters** (used by CBETA for rare characters with no Unicode code point) align correctly but display as an empty box.
-- **Punctuation and variant characters still get footnotes.** `衆` / `眾` or `聞：` / `聞。` count as one reading with `NormalizedTokenCountWeigher`, but the footnote serializers still list them as different readings (see below).
-- **Not yet tested on real OCR output.** The weighers were evaluated on editions and simulated OCR errors; real OCR output of Chinese pages is needed to measure how well the merging works.
 
-## Known issues in Pydurma's shared code
-
-These are in code shared by all languages (Tibetan included), not in the Chinese module, and are left unchanged:
-
-- **`CommonSpeller` + `MdSerializer` / `HFMLSerializer` / `DocxSerializer` fail with an `IndexError`.** `CommonSpeller` adds the first witness twice, so its matrix has one more column than there are witness files. Calling the aligner directly (as in the examples above) avoids it.
-- **Extra footnotes.** `is_diff_token` (used by the matrix post-processing and the footnote serializers) compares the token text directly, so punctuation-only and variant-character differences get footnotes. It could take the normalizer into account.
-- **HFML notes on several characters are not marked with `:`.** `HFMLSerializer` counts syllables with the Tibetan tsheg, so for Chinese it always treats a note as one syllable.
-- **`CSVSerializer` writes the file without specifying UTF-8**, which can fail on Windows for Chinese text.
