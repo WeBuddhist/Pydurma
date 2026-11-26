@@ -1,6 +1,6 @@
 # Sanskrit (`sa`)
 
-Sanskrit support for Pydurma, for the same whole process as Tibetan: several witnesses of a text (OCR outputs or editions) are aligned, the best reading is selected at each point, and the result is written as one merged text. It provides a tokenizer, a normalizer and a weigher (`ValidSaTokenWeigher`) that plug into the same pipeline as the Tibetan ones. 
+Sanskrit support for Pydurma, for the same whole process as Tibetan: several witnesses of a text (OCR outputs or editions) are aligned, the best reading is selected at each point, and the result is written as one merged text. It provides a tokenizer, a normalizer and a weigher (`ValidSaTokenWeigher`) that plug into the same pipeline as the Tibetan ones.
 
 ## Quick start
 
@@ -123,7 +123,7 @@ dharma[^1]kṣetre kurukṣetre samave[^2]tā yuyutsavaḥ |[^3]
 
 The OCR error *dhkarma* loses (it is outvoted and is not valid Sanskrit), and so does the minority reading *samāgatā*. Use `save_serialized_matrix()` to write the output to a file in the given folder.
 
-Call the aligner directly as above rather than through `CommonSpeller`, which currently gives one column too many for the footnote serializers (see [Known issues](#known-issues-in-pydurmas-shared-code)).
+Call the aligner directly as above rather than through `CommonSpeller`, which currently gives one column too many for the footnote serializers.
 
 ## How it works
 

@@ -120,7 +120,7 @@ Output:
 [^5]: 口]A: ロ; B,C: 口;
 ```
 
-The katakana ロ that the OCR of witness A read for 口 loses (it is outvoted and is not a Chinese character), and so does the minority reading 住. Use `save_serialized_matrix()` to write the output to a file in the given folder. The footnotes for punctuation-only differences come from Pydurma's shared code (see [Known issues](#known-issues-in-pydurmas-shared-code)).
+The katakana ロ that the OCR of witness A read for 口 loses (it is outvoted and is not a Chinese character), and so does the minority reading 住. Use `save_serialized_matrix()` to write the output to a file in the given folder. The footnotes for punctuation-only differences come from Pydurma's shared code.
 
 Call the aligner directly as above rather than through `CommonSpeller`, which currently gives one column too many for the footnote serializers.
 
@@ -171,7 +171,7 @@ Two weighers are meant to be used together:
 
 On the Diamond Sūtra, `ValidZhTokenWeigher` flags none of the 31,265 tokens of the 5 real editions. Merging 2 simulated OCR outputs (about 60 errors each), it leaves about a third fewer errors than the majority vote alone (40 instead of 60), and settles 1 vs. 1 disagreements on look-alikes and one-off characters. It can't detect errors that produce a common character (未 / 末, 己 / 已): those are left to the majority vote.
 
-**Whether the one-off penalty helps depends on the kind of OCR errors.** When errors produce unusual characters, it is what helps most with 2 witnesses, where the majority vote can't decide (simulation on the Diamond Sūtra: 59 → 40 errors; the look-alike check alone: 59 → 59). When errors produce common characters, it can make things slightly worse, as the correct character is often the rare one: on the Chojuk, where 520 of the 1,593 different characters appear only once, merging 2 witnesses gave 1.03% errors with it against 0.99% without it. Until it is tested on real OCR output, it can be turned off with `rare_characters=False` (or by creating the weigher without `from_texts()`).
+**Whether the one-off penalty helps depends on the kind of OCR errors.** When errors produce unusual characters, it is what helps most with 2 witnesses, where the majority vote can't decide (simulation on the Diamond Sūtra: 59 → 40 errors; the look-alike check alone: 59 → 59). When errors produce common characters, it can make things slightly worse, as the correct character is often the rare one: on the Chojuk, where 520 of the 1,593 different characters appear only once, merging 2 witnesses gave 1.03% errors with it against 0.99% without it. It can be turned off with `rare_characters=False` (or by creating the weigher without `from_texts()`).
 
 ### Output (serializers)
 
